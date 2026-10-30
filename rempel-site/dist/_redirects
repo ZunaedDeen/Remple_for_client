@@ -4,3 +4,4 @@
 /light-demolition-tearouts   /light-demolition/    301
 /contact                     /quote/               301
 /about-us                    /about/               301
+/post/*                     /blog/:splat/         301

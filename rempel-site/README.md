@@ -1,4 +1,4 @@
-# Rempel Removal website (v5)
+# Rempel Removal website (v6)
 
 A fast static site with 23 pages, built to turn ad clicks into calls. Every photo is Rempel's own (pulled from their current site), and their four YouTube Shorts appear throughout. Nothing is AI-generated.
 
@@ -44,7 +44,6 @@ SEO pieces: unique titles and descriptions, LocalBusiness and FAQ schema, `sitem
 - [ ] **Hours and service-area towns**: add them once Carrie confirms.
 - [ ] **Projects**: add neighbourhoods and customer quotes to `PROJECTS` where you have them (only with the customer's permission). Ask Carrie for more same-spot before/after pairs. They make the best hero and project photos.
 - [ ] **Chad's photo**: confirm the man with the truck (`chad_truck`) is Chad before launch.
-- [ ] **Blog**: the 3 posts still link to the old site. Move their text over before Wix is cancelled.
 - [ ] **Reviews**: currently screenshots. Swap in real Google review text with names once you have permission.
 
 ## Adding a video loop to the hero or banner
@@ -80,3 +79,27 @@ Only animate real jobs: the clip should show the clutter leaving, never invent a
 
 - **Project**: copy an entry in `PROJECTS`, give it a new `slug` and `service`, and list its beats. Each beat is `{"img": key, "tag": "before" | "done" | "any label"}`. Add the photo to `IMG` first. Use `"note"` when the photos come from more than one job.
 - **Video**: add `{"id": "<YouTube id>", "title": ..., "line": ...}` to `VIDEOS`. Link it to a service or project with `"video": "<id>"`.
+
+## Blog posts
+
+All 4 posts from the old Wix blog are on this site: `/blog/` and `/blog/<post>/`. Old links (`/post/<post>`) redirect to the new pages. To add a post, create `content/blog/<url-slug>.txt`:
+
+```
+title: Your post title
+date: 2026-11-15
+author: Rempel Removal
+description: One or two sentences for Google and the blog list.
+cover: d0f614_xxxxxxxx~mv2.jpg        (a Wix media id, an IMG key from build.py, or assets/img/file.jpg)
+
+First paragraph (shown larger).
+
+## A heading
+
+A normal paragraph. Write {phone} to insert the phone number as a tap-to-call link.
+
+> A highlighted line
+
+!img d0f614_xxxxxxxx~mv2.jpg | Optional caption
+```
+
+Blank lines separate blocks. Push to GitHub and Netlify rebuilds the site with the new post, sitemap included.

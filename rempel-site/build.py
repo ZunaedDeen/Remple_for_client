@@ -359,11 +359,51 @@ PROJECTS = [
 ]
 PROJ = {p["slug"]: p for p in PROJECTS}
 
-POSTS = [
-    ("Why we keep stuff we don't need, and how to finally let it go", "Why decluttering is hard, and a simple way to start."),
-    ("Don't let your junk spend the winter outside: 6 things to get rid of before the snow", "What to clear from the yard before it freezes in place."),
-    ("Why fall is the best time for a big junk cleanout", "Cooler weather, open schedules, and a clear garage before winter."),
-]
+# Blog posts live in content/blog/<slug>.txt (see README for the format). Newest first.
+MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+
+
+def load_posts():
+    posts = []
+    for f in sorted((ROOT / "content" / "blog").glob("*.txt")):
+        head, _, body = f.read_text(encoding="utf-8").partition("\n\n")
+        meta = dict(line.split(":", 1) for line in head.splitlines() if ":" in line)
+        meta = {k.strip(): v.strip() for k, v in meta.items()}
+        meta["slug"] = f.stem
+        meta["body"] = body.strip()
+        y, m, d = meta["date"].split("-")
+        meta["date_text"] = f"{MONTHS[int(m) - 1]} {int(d)}, {y}"
+        posts.append(meta)
+    return sorted(posts, key=lambda p: p["date"], reverse=True)
+
+
+def wix_or_key(v):
+    return WIX.replace("d0f614_", "") + v if v.startswith("d0f614_") else img(v)
+
+
+def inline(text):
+    t = e(fill(text) if "{phone}" in text else text)
+    phone = e(SITE["phone_display"])
+    return t.replace(phone, f'<a href="tel:{SITE["phone_e164"]}">{phone}</a>')
+
+
+def render_post_body(body):
+    out, first_p = [], True
+    for block in [b.strip() for b in body.split("\n\n") if b.strip()]:
+        if block.startswith("## "):
+            out.append(f"<h2>{e(block[3:])}</h2>")
+        elif block.startswith("> "):
+            out.append(f"<blockquote><p>{inline(block[2:])}</p></blockquote>")
+        elif block.startswith("!img "):
+            src, _, cap = block[5:].partition("|")
+            cap = cap.strip()
+            out.append(f'<figure><img src="{wix_or_key(src.strip())}" alt="{e(cap)}" loading="lazy">{f"<figcaption>{e(cap)}</figcaption>" if cap else ""}</figure>')
+        else:
+            cls = ' class="lead"' if first_p else ""
+            first_p = False
+            out.append(f"<p{cls}>{inline(block)}</p>")
+    return "\n".join(out)
+
 
 # ---------------------------------------------------------------- helpers
 e = html.escape
@@ -905,6 +945,7 @@ def build_about():
     <p>As a long snapper, Chad learned that success comes down to doing the little things right: being consistent, dependable, disciplined and ready when your team needs you. Those values shaped how he built his business and how he works with people today.</p>
     <p>Chad's family owned Rempel Brothers Construction for more than 60 years, building a legacy of hard work, trust and doing the job right. He's proud to carry that forward with Rempel Removal.</p>
     <p>Whether it's a garage packed to the ceiling, a pile of demolition debris or a full property cleanout, Chad and his team will have it gone in a snap.</p>
+    <p><a class="btn btn--navy" href="{url("blog/care/")}">Read Chad's post: CARE</a></p>
     <div class="about-photos" style="margin-top:2rem">
       <img src="{img("football_a")}" alt="Chad Rempel during his pro football career" loading="lazy">
       <img src="{img("football_b")}" alt="Chad Rempel long snapping" loading="lazy">
@@ -922,13 +963,47 @@ def build_about():
     write("about/", page("about/", "About Rempel Removal | Meet Chad Rempel", "Meet Chad Rempel: 17 seasons as a pro long snapper, Saskatoon's first Booster Juice, and a family construction legacy of 60+ years. Now he runs Rempel Removal.", body, active="about/"))
 
 
+def post_card(p, big=False):
+    fit = ' style="object-fit:contain;background:var(--white)"' if p.get("cover_fit") == "contain" else ""
+    first = next((x for x in p["body"].split("\n\n") if x and not x.startswith(("#", ">", "!"))), "")
+    return f'''<a class="post-card{" post-card--big" if big else ""}" href="{url("blog/" + p["slug"] + "/")}">
+  <div class="post-cover"><img src="{wix_or_key(p["cover"])}" alt="" loading="lazy"{fit}></div>
+  <div class="post-card-body"><span class="post-meta">{e(p["date_text"])} · {e(p["author"])}</span><h2>{e(p["title"])}</h2><p>{e(p["description"])}</p></div>
+</a>'''
+
+
 def build_blog():
+    posts = load_posts()
     at("blog/")
-    items = "".join(f'<li><a href="https://www.rempelremoval.com/blog"><h2>{e(t)}</h2><p>{e(d)}</p></a></li>' for t, d in POSTS)
+    cards = post_card(posts[0], big=True) + "".join(post_card(p) for p in posts[1:])
     body = f'''<section class="page-head page-head--plain"><div class="wrap"><div>
-  <h1>Blog</h1><p>Local tips on junk removal and decluttering that Saskatoon homeowners can use.</p></div></div></section>
-<section class="section section--mist"><div class="wrap"><ul class="posts">{items}</ul></div></section>''' + cta_band()
+  <h1>Blog</h1><p>Local tips on junk removal and decluttering that Saskatoon homeowners can use, plus a few words from Chad.</p></div></div></section>
+<section class="section section--mist"><div class="wrap"><div class="post-grid">{cards}</div></div></section>''' + cta_band()
     write("blog/", page("blog/", "Junk Removal Saskatoon Blog | Rempel Removal", "Local tips and advice on junk removal that Saskatoon homeowners can trust.", body, active="blog/"))
+
+    for i, p in enumerate(posts):
+        at("blog/" + p["slug"] + "/")
+        others = [q for q in posts if q is not p][:2]
+        schema = {"@context": "https://schema.org", "@type": "BlogPosting", "headline": p["title"], "datePublished": p["date"],
+                  "author": {"@type": "Person" if p["author"] != SITE["name"] else "Organization", "name": p["author"]},
+                  "publisher": {"@type": "Organization", "name": SITE["name"], "logo": {"@type": "ImageObject", "url": img("logo")}},
+                  "image": wix_or_key(p["cover"]), "description": p["description"],
+                  "mainEntityOfPage": SITE["domain"] + "/blog/" + p["slug"] + "/"}
+        body = f'''<article>
+<header class="post-head"><div class="wrap">
+  <div class="crumbs"><a href="{url("blog/")}">Blog</a></div>
+  <h1>{e(p["title"])}</h1>
+  <p class="post-meta">{e(p["date_text"])} · {e(p["author"])}</p>
+</div></header>
+<div class="section"><div class="wrap"><div class="prose">
+{render_post_body(p["body"])}
+</div></div></div>
+</article>
+<section class="section section--mist"><div class="wrap">
+  <div class="section-head"><h2>More from the blog</h2></div>
+  <div class="post-grid">{"".join(post_card(q) for q in others)}</div>
+</div></section>''' + cta_band(title="Got a pile that needs to disappear?")
+        write("blog/" + p["slug"] + "/", page("blog/" + p["slug"] + "/", f'{p["title"]} | Rempel Removal Blog', p["description"], body, active="blog/", schema=schema))
 
 
 def build_quote():
@@ -989,8 +1064,9 @@ def build_meta():
         "/light-demolition-tearouts   /light-demolition/    301",
         "/contact                     /quote/               301",
         "/about-us                    /about/               301",
+        "/post/*                     /blog/:splat/         301",
     ]) + "\n")
-    paths = ["", "services/", "our-work/", "about/", "blog/", "quote/"] + [s["slug"] + "/" for s in SERVICES] + ["our-work/" + p["slug"] + "/" for p in PROJECTS]
+    paths = ["", "services/", "our-work/", "about/", "blog/", "quote/"] + [s["slug"] + "/" for s in SERVICES] + ["our-work/" + p["slug"] + "/" for p in PROJECTS] + ["blog/" + p["slug"] + "/" for p in load_posts()]
     (OUT / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                      + "".join(f"  <url><loc>{SITE['domain']}/{p}</loc></url>\n" for p in paths) + "</urlset>\n")
     (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {SITE['domain']}/sitemap.xml\n")

@@ -1,0 +1,7 @@
+# Netlify reads this automatically. It rebuilds the site from build.py on every push.
+[build]
+  command = "python3 build.py"
+  publish = "dist"
+
+[build.environment]
+  PYTHON_VERSION = "3.12"
