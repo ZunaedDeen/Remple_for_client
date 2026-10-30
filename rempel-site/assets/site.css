@@ -416,6 +416,9 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
 .prose blockquote p { margin: 0; font-family: var(--display); font-weight: 800; font-size: var(--step-1); line-height: 1.35; }
 .prose figure { margin: 1.75rem 0; }
 .prose figure img { width: 100%; max-height: 32rem; object-fit: cover; border-radius: var(--r-lg); background: var(--mist); }
+.prose figure.is-screen { background: radial-gradient(ellipse at 50% 40%, #2a3f5f 0%, var(--navy) 70%); border-radius: var(--r-lg); padding: clamp(1.5rem, 5vw, 3rem) clamp(1.5rem, 8vw, 5rem) 1.25rem; text-align: center; }
+.prose figure.is-screen img { width: auto; max-width: 100%; max-height: 22rem; margin-inline: auto; object-fit: contain; border-radius: 4px; background: none; box-shadow: 0 0 0 1px rgba(255, 255, 255, .08), 0 18px 50px rgba(0, 0, 0, .45); }
+.prose figure.is-screen figcaption { color: var(--on-navy); margin-top: 1rem; font-weight: 600; }
 .prose figcaption { font-size: .92rem; color: var(--muted); margin-top: .5rem; }
 .prose a { text-decoration-color: var(--sun-deep); text-decoration-thickness: 2px; text-underline-offset: 3px; font-weight: 700; }
 

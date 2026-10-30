@@ -1,4 +1,4 @@
-# Rempel Removal website (v7)
+# Rempel Removal website (v8)
 
 A fast static site with 23 pages, built to turn ad clicks into calls. Every photo is Rempel's own (pulled from their current site), and their four YouTube Shorts appear throughout. Nothing is AI-generated.
 
@@ -102,6 +102,7 @@ A normal paragraph. Write {phone} to insert the phone number as a tap-to-call li
 > A highlighted line
 
 !img d0f614_xxxxxxxx~mv2.jpg | Optional caption
+!img d0f614_xxxxxxxx~mv2.png | Caption | screen      (shows the whole image, uncropped, on a dark "projector" backdrop)
 ```
 
 Blank lines separate blocks. Every post page automatically gets the reading time, share buttons (Facebook, text, copy link), an author box and a "Text us a photo" box at the end. Push to GitHub and Netlify rebuilds the site with the new post, sitemap included.

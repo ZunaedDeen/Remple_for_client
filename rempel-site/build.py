@@ -395,9 +395,11 @@ def render_post_body(body):
         elif block.startswith("> "):
             out.append(f"<blockquote><p>{inline(block[2:])}</p></blockquote>")
         elif block.startswith("!img "):
-            src, _, cap = block[5:].partition("|")
-            cap = cap.strip()
-            out.append(f'<figure><img src="{wix_or_key(src.strip())}" alt="{e(cap)}" loading="lazy">{f"<figcaption>{e(cap)}</figcaption>" if cap else ""}</figure>')
+            parts = [x.strip() for x in block[5:].split("|")]
+            src, cap = parts[0], (parts[1] if len(parts) > 1 else "")
+            style = parts[2] if len(parts) > 2 else ""
+            cls = f' class="is-{style}"' if style else ""
+            out.append(f'<figure{cls}><img src="{wix_or_key(src)}" alt="{e(cap)}" loading="lazy">{f"<figcaption>{e(cap)}</figcaption>" if cap else ""}</figure>')
         else:
             cls = ' class="lead"' if first_p else ""
             first_p = False
