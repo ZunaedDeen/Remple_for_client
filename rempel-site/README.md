@@ -1,4 +1,4 @@
-# Rempel Removal website (v6)
+# Rempel Removal website (v7)
 
 A fast static site with 23 pages, built to turn ad clicks into calls. Every photo is Rempel's own (pulled from their current site), and their four YouTube Shorts appear throughout. Nothing is AI-generated.
 
@@ -90,6 +90,8 @@ date: 2026-11-15
 author: Rempel Removal
 description: One or two sentences for Google and the blog list.
 cover: d0f614_xxxxxxxx~mv2.jpg        (a Wix media id, an IMG key from build.py, or assets/img/file.jpg)
+hero: chad_truck                      (optional: a different photo for the top of the post page)
+hero_alt: What the hero photo shows    (optional)
 
 First paragraph (shown larger).
 
@@ -102,4 +104,4 @@ A normal paragraph. Write {phone} to insert the phone number as a tap-to-call li
 !img d0f614_xxxxxxxx~mv2.jpg | Optional caption
 ```
 
-Blank lines separate blocks. Push to GitHub and Netlify rebuilds the site with the new post, sitemap included.
+Blank lines separate blocks. Every post page automatically gets the reading time, share buttons (Facebook, text, copy link), an author box and a "Text us a photo" box at the end. Push to GitHub and Netlify rebuilds the site with the new post, sitemap included.

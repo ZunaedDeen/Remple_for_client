@@ -230,6 +230,14 @@
     sliders.forEach(function (b) { seen.observe(b); });
   }
 
+  /* ---------- Copy-link buttons ---------- */
+  document.querySelectorAll("[data-copy]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var done = function () { var t = b.textContent; b.textContent = "Link copied"; setTimeout(function () { b.textContent = t; }, 1800); };
+      if (navigator.clipboard) navigator.clipboard.writeText(b.dataset.copy).then(done, done); else done();
+    });
+  });
+
   /* ---------- Our Work filters ---------- */
   var filters = document.querySelector("[data-filters]");
   if (filters) {

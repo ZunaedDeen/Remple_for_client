@@ -989,14 +989,45 @@ def build_blog():
                   "publisher": {"@type": "Organization", "name": SITE["name"], "logo": {"@type": "ImageObject", "url": img("logo")}},
                   "image": wix_or_key(p["cover"]), "description": p["description"],
                   "mainEntityOfPage": SITE["domain"] + "/blog/" + p["slug"] + "/"}
+        words = len(re.findall(r"\w+", p["body"]))
+        minutes = max(1, round(words / 220))
+        page_url = SITE["domain"] + "/blog/" + p["slug"] + "/"
+        hero_src = img(p["hero"]) if p.get("hero") in IMG else wix_or_key(p.get("hero") or p["cover"])
+        hero_alt = p.get("hero_alt", "")
+        hero_fit = ' style="object-fit:contain;background:var(--white)"' if (not p.get("hero") and p.get("cover_fit") == "contain") else ""
+        is_chad = p["author"] == "Chad Rempel"
+        author_box = f'''<aside class="author-box">
+  <img src="{img("chad_truck")}" alt="Chad Rempel with the Rempel Removal truck" loading="lazy">
+  <div>
+    <p class="author-name">{"Written by Chad Rempel" if is_chad else "From the Rempel Removal team"}</p>
+    <p>{"Chad owns Rempel Removal. He played 17 seasons as a pro long snapper in the CFL and NFL, ran Saskatoon's first Booster Juice, and comes from a family that ran Rempel Brothers Construction for more than 60 years." if is_chad else "Rempel Removal is a locally owned junk removal company in Saskatoon, run by Chad Rempel. We do the lifting, loading and hauling, so you get your space back."}</p>
+    <a href="{url("about/")}">More about Chad</a>
+  </div>
+</aside>'''
+        share = f'''<div class="share" aria-label="Share this post">
+  <span>Share</span>
+  <a class="share-btn" href="https://www.facebook.com/sharer/sharer.php?u={page_url}" target="_blank" rel="noopener">Facebook</a>
+  <a class="share-btn" href="sms:?&body={e(p["title"])}%20{page_url}">Text</a>
+  <button class="share-btn" type="button" data-copy="{page_url}">Copy link</button>
+</div>'''
+        callout = f'''<div class="post-cta">
+  <div><h2>Got a pile that needs to go?</h2><p>Text us a photo and we'll send back a straightforward price.</p></div>
+  <div class="btn-row">{text_btn("btn--navy")}{call_btn("btn--line")}</div>
+</div>'''
         body = f'''<article>
-<header class="post-head"><div class="wrap">
-  <div class="crumbs"><a href="{url("blog/")}">Blog</a></div>
-  <h1>{e(p["title"])}</h1>
-  <p class="post-meta">{e(p["date_text"])} · {e(p["author"])}</p>
+<header class="page-head post-head"><div class="wrap">
+  <div>
+    <div class="crumbs"><a href="{url("blog/")}">Blog</a></div>
+    <h1>{e(p["title"])}</h1>
+    <p class="post-meta">{e(p["date_text"])} · {e(p["author"])} · {minutes} min read</p>
+  </div>
+  <img src="{hero_src}" alt="{e(hero_alt)}"{hero_fit}>
 </div></header>
 <div class="section"><div class="wrap"><div class="prose">
 {render_post_body(p["body"])}
+{share}
+{author_box}
+{callout}
 </div></div></div>
 </article>
 <section class="section section--mist"><div class="wrap">

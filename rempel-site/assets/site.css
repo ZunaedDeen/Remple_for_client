@@ -392,9 +392,22 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
 .post-card--big .post-card-body { padding: clamp(1.5rem, 4vw, 2.75rem); align-content: center; }
 .post-card--big h2 { font-size: var(--step-3); }
 .post-card--big p { font-size: var(--step-1); }
-.post-head { background: var(--sun-soft); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-.post-head .wrap { max-width: 46rem; }
 .post-head h1 { font-size: var(--step-3); font-weight: 850; font-stretch: 106%; margin-bottom: 1rem; }
+.post-head .post-meta { font-size: 1rem; }
+.post-head img { aspect-ratio: 4 / 3; max-height: 26rem; }
+.share { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin: 2.5rem 0 0; padding-top: 1.5rem; border-top: 1px solid var(--rule); }
+.share span { font-weight: 800; margin-right: .25rem; }
+.share-btn { font: inherit; font-size: .95rem; font-weight: 700; text-decoration: none !important; color: var(--navy); background: var(--white); border: 1.5px solid var(--rule); border-radius: 999px; padding: .4rem .9rem; cursor: pointer; }
+.share-btn:hover { border-color: var(--navy); }
+.author-box { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1.1rem; align-items: start; margin: 2rem 0; padding: 1.25rem; background: var(--mist); border-radius: var(--r-lg); }
+.author-box img { width: 5.5rem; height: 5.5rem; border-radius: 50%; object-fit: cover; object-position: 50% 25%; }
+.author-box p { font-size: 1rem; margin: 0 0 .5rem; color: var(--muted); }
+.author-box .author-name { font-weight: 800; color: var(--navy); margin-bottom: .25rem; }
+.author-box a { font-size: 1rem; }
+.post-cta { display: grid; grid-template-columns: 1fr; gap: 1rem; align-items: center; padding: 1.5rem 1.6rem; border-radius: var(--r-lg); background: var(--sun); }
+.post-cta h2 { font-size: var(--step-1); margin: 0 0 .3rem; }
+.post-cta p { margin: 0; font-size: 1rem; }
+.post-cta .btn { font-size: .98rem; }
 .prose { max-width: 42rem; margin-inline: auto; font-size: 1.15rem; line-height: 1.7; }
 .prose p { margin: 0 0 1.1em; max-width: none; }
 .prose p.lead { font-size: var(--step-1); line-height: 1.55; }
@@ -480,6 +493,9 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
   .steps { grid-template-columns: 1fr; }
   .jobs { grid-template-columns: 1fr; }
   .post-grid { grid-template-columns: 1fr; }
+  .post-cta { grid-template-columns: 1fr; }
+  .author-box { grid-template-columns: 4rem 1fr; }
+  .author-box img { width: 4rem; height: 4rem; }
   .reviews { grid-template-columns: 1fr; }
   .field-row { grid-template-columns: 1fr; }
   .facts { grid-template-columns: 1fr; }

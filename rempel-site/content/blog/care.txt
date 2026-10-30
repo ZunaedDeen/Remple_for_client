@@ -4,6 +4,8 @@ author: Chad Rempel
 description: What a one-word slide from Coach Mike O'Shea taught Chad Rempel in 17 years of pro football, and what it means for how Rempel Removal works.
 cover: d0f614_b653e12eb69c44b29b7dd7e4558b178c~mv2.png
 cover_fit: contain
+hero: football_a
+hero_alt: Chad Rempel during his 17 seasons of pro football
 
 Years ago, when I was playing for the Toronto Argonauts, Mike O’Shea was our Special Teams Coordinator.
 
